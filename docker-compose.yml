@@ -1,0 +1,71 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: malware-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: malware_detection
+  
+  redis:
+    image: redis:7-alpine
+    container_name: malware-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+  
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: malware-ml-service
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ml-service/saved_models:/app/saved_models
+      - ./ml-service/temp_files:/app/temp_files
+    environment:
+      - CUCKOO_HOST=host.docker.internal
+    depends_on:
+      - redis
+  
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: malware-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/malware_detection
+      - REDIS_HOST=redis
+      - ML_SERVICE_URL=http://ml-service:8000
+    depends_on:
+      - mongodb
+      - redis
+      - ml-service
+  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: malware-frontend
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    depends_on:
+      - backend
+
+volumes:
+  mongodb_data:
+  redis_data:

@@ -7,6 +7,33 @@ const connectDB = require('./src/config/database');
 const { requestLogger } = require('./src/middleware/logger');
 const errorHandler = require('./src/middleware/errorHandler');
 
+
+
+// backend/server.js (production additions)
+
+const compression = require('compression');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
+// Compression
+app.use(compression());
+
+// Security headers
+app.use(helmet());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+app.use('/api/', limiter);
+
+// Production logging
+if (process.env.NODE_ENV === 'production') {
+  app.use(require('morgan')('combined'));
+}
+
 // Import routes
 const uploadRoutes = require('./src/routes/upload');
 const analysisRoutes = require('./src/routes/analysis');
