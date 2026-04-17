@@ -1,5 +1,7 @@
 # Root .gitignore
 
+
+main.py
 # Node modules
 node_modules/
 npm-debug.log*
