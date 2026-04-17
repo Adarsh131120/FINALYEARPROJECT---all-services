@@ -15,6 +15,9 @@ const compression = require('compression');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
+// Initialize app
+const app = express();
+
 // Compression
 app.use(compression());
 
@@ -37,9 +40,6 @@ if (process.env.NODE_ENV === 'production') {
 // Import routes
 const uploadRoutes = require('./src/routes/upload');
 const analysisRoutes = require('./src/routes/analysis');
-
-// Initialize app
-const app = express();
 
 // Connect to database
 connectDB();
