@@ -27,27 +27,27 @@ analysisQueue.process(async (job) => {
       }
     );
     
-    // Submit to ML service
+    // Submit to ML service for analysis
     job.progress(30);
-    const uploadResult = await mlService.uploadFile(filePath, filename);
-    
+    const uploadResult = await mlService.analyzeFile(filePath);
+
     const mlTaskId = uploadResult.task_id;
-    
+
     // Update with ML task ID
     await Analysis.findOneAndUpdate(
       { taskId },
       { cuckooTaskId: mlTaskId, progress: 40 }
     );
-    
+
     // Poll for results
     let attempts = 0;
     const maxAttempts = 120; // 10 minutes with 5-second intervals
-    
+
     while (attempts < maxAttempts) {
       job.progress(40 + (attempts / maxAttempts) * 50);
-      
-      const statusResult = await mlService.getStatus(mlTaskId);
-      
+
+      const statusResult = await mlService.getAnalysisStatus(mlTaskId);
+
       if (statusResult.status === 'completed') {
         // Analysis complete
         const result = statusResult.result;

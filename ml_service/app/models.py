@@ -37,7 +37,7 @@ class PredictionRequest(BaseModel):
 
 class PredictionResponse(BaseModel):
     """Response model for prediction"""
-    success: bool
+    success: Optional[bool] = True
     malware_family: Optional[str] = None
     confidence: Optional[float] = Field(None, ge=0, le=1)
     probabilities: Optional[Dict[str, float]] = None

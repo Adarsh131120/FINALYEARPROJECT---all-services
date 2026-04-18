@@ -302,8 +302,9 @@ async def predict_from_sequence(request: PredictionRequest):
     
     try:
         result = predictor.predict(request.api_sequence)
+        result['success'] = True
         return PredictionResponse(**result)
-        
+
     except Exception as e:
         logger.error(f"Prediction error: {e}")
         raise HTTPException(
