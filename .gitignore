@@ -6,6 +6,9 @@ Python
 
 malapi2019.txt
 
+ml_pipeline/data/raw/malapi2019.csv
+ml_pipeline/data/archive/mal-api-2019/1000_calls.txt
+
 main.py
 # Node modules
 node_modules/
