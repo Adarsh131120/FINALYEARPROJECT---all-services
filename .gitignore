@@ -42,6 +42,7 @@ uploads/
 temp_files/
 
 # Models (too large for git)
+*.txt
 *.pkl
 *.h5
 *.model
