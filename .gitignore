@@ -42,7 +42,7 @@ uploads/
 temp_files/
 
 # Models (too large for git)
-*.txt
+ml_pipeline/data/raw/malapi2019.txt
 *.pkl
 *.h5
 *.model
